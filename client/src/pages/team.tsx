@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { teamMembers } from "@/lib/team-data";
 
 export default function TeamPage() {
-  const founder = teamMembers.find(member => member.isFounder);
+  const founders = teamMembers.filter(member => member.isFounder);
   const otherMembers = teamMembers.filter(member => !member.isFounder);
 
   return (
@@ -18,8 +18,103 @@ export default function TeamPage() {
           </p>
         </div>
 
-        {/* Founder Highlight */}
-        {founder && (
+        {/* Founders Section */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8 animate-fade-in-up animation-delay-400">
+            Direction du cabinet
+          </h2>
+          <div className="grid lg:grid-cols-2 gap-8">
+            {founders.map((founder, index) => (
+              <Card key={founder.id} className="shadow-sm hover-lift animate-fade-in-up animation-delay-400">
+                <CardContent className="p-8">
+                  <div className="text-center space-y-4">
+                    <img 
+                      src={founder.image} 
+                      alt={`${founder.name}, ${founder.title}`}
+                      className="w-48 h-48 rounded-full mx-auto object-cover shadow-lg hover-scale"
+                    />
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">{founder.name}</h3>
+                      <p className="text-primary font-medium">{founder.title}</p>
+                      {founder.experience && (
+                        <p className="text-gray-600 text-sm">{founder.experience}</p>
+                      )}
+                    </div>
+                    <p className="text-gray-700 leading-relaxed text-sm">
+                      {founder.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {founder.specialties.map((specialty) => (
+                        <Badge key={specialty} variant="secondary" className="bg-primary/10 text-primary hover-scale text-xs">
+                          {specialty}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Team Section */}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8 animate-fade-in-up">
+            Notre équipe
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {otherMembers.map((member, index) => (
+              <Card key={member.id} className={`shadow-sm hover:shadow-md transition-all hover-lift animate-fade-in-up animation-delay-${200 + index * 100}`}>
+                <CardContent className="p-6">
+                  <img 
+                    src={member.image} 
+                    alt={`${member.name}, ${member.title}`}
+                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover hover-scale"
+                  />
+                  <div className="text-center">
+                    <h3 className="text-xl font-semibold text-gray-900">{member.name}</h3>
+                    <p className="text-primary font-medium mb-3">{member.title}</p>
+                    <p className="text-gray-600 text-sm mb-4">
+                      {member.description}
+                    </p>
+                    <div className="flex flex-wrap gap-1 justify-center">
+                      {member.specialties.map((specialty) => {
+                        // Determine color based on specialty type
+                        let colorClass = "bg-accent/10 text-accent";
+                        if (specialty.toLowerCase().includes('seniors') || 
+                            specialty.toLowerCase().includes('neurologie') ||
+                            specialty.toLowerCase().includes('domicile') ||
+                            specialty.toLowerCase().includes('adaptation')) {
+                          colorClass = "bg-secondary/10 text-secondary";
+                        } else if (specialty.toLowerCase().includes('ergonomie') || 
+                                   specialty.toLowerCase().includes('tms')) {
+                          colorClass = "bg-primary/10 text-primary";
+                        }
+                        
+                        return (
+                          <Badge 
+                            key={specialty} 
+                            variant="secondary" 
+                            className={`${colorClass} px-2 py-1 text-xs`}
+                          >
+                            {specialty}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+        {/* Old single founder section - removed */}
+        {false && (
           <Card className="mb-12 shadow-sm hover-lift animate-fade-in-up animation-delay-400">
             <CardContent className="p-8">
               <div className="grid lg:grid-cols-2 gap-8 items-center">
@@ -52,55 +147,3 @@ export default function TeamPage() {
               </div>
             </CardContent>
           </Card>
-        )}
-
-        {/* Team Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {otherMembers.map((member, index) => (
-            <Card key={member.id} className={`shadow-sm hover:shadow-md transition-all hover-lift animate-fade-in-up animation-delay-${200 + index * 100}`}>
-              <CardContent className="p-6">
-                <img 
-                  src={member.image} 
-                  alt={`${member.name}, ${member.title}`}
-                  className="w-32 h-32 rounded-full mx-auto mb-4 object-cover hover-scale"
-                />
-                <div className="text-center">
-                  <h3 className="text-xl font-semibold text-gray-900">{member.name}</h3>
-                  <p className="text-primary font-medium mb-3">{member.title}</p>
-                  <p className="text-gray-600 text-sm mb-4">
-                    {member.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1 justify-center">
-                    {member.specialties.map((specialty) => {
-                      // Determine color based on specialty type
-                      let colorClass = "bg-accent/10 text-accent";
-                      if (specialty.toLowerCase().includes('seniors') || 
-                          specialty.toLowerCase().includes('neurologie') ||
-                          specialty.toLowerCase().includes('domicile') ||
-                          specialty.toLowerCase().includes('adaptation')) {
-                        colorClass = "bg-secondary/10 text-secondary";
-                      } else if (specialty.toLowerCase().includes('ergonomie') || 
-                                 specialty.toLowerCase().includes('tms')) {
-                        colorClass = "bg-primary/10 text-primary";
-                      }
-                      
-                      return (
-                        <Badge 
-                          key={specialty} 
-                          variant="secondary" 
-                          className={`${colorClass} px-2 py-1 text-xs`}
-                        >
-                          {specialty}
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
